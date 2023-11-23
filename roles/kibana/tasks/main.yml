@@ -1,0 +1,39 @@
+---
+# tasks file for kibana
+- name: Ensure dependencies are installed.
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2
+    state: present
+
+- name: Save repo
+  ansible.builtin.shell: echo "deb [trusted=yes] https://mirror.yandex.ru/mirrors/elastic/8/ stable main" | sudo tee /etc/apt/sources.list.d/elastic-8.x.list
+
+- name: Install Kibana
+  apt:
+    name: kibana
+    state: present
+    update_cache: true
+
+- name: Set kibana base configuration
+  template:
+    src: kibana.yml
+    dest: /etc/kibana/kibana.yml
+    mode: 0644
+
+- name: Set permissions to kibana.yml
+  become: true
+  ansible.builtin.shell: chmod 777 /etc/kibana/*
+
+- name: Add to autostart
+  become: true
+  ansible.builtin.shell: systemctl daemon-reload && systemctl enable kibana.service && systemctl start kibana.service
+
+- name: Ensure Kibana is started and enabled
+  service:
+    name: kibana
+    state: started
+    enabled: true
+
+

@@ -1,0 +1,3 @@
+---
+# defaults file for ntp
+ntpserver: ntp.ultracoder.org 

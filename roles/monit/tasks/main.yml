@@ -1,0 +1,22 @@
+---
+# tasks file for monit
+- name: install monit
+  apt:
+    pkg: monit
+    state: present
+
+- name: start monit
+  service:
+    name: monit
+    state: started
+
+- name: configure monit
+  template:
+    src: rsyslog.conf
+    dest: /etc/monit/conf.d/rsyslog.conf
+    mode: 0644
+
+- name: restart monit
+  service:
+    name: monit
+    state: restarted

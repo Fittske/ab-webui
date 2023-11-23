@@ -1,0 +1,34 @@
+---
+# tasks file for rsyslog
+- name: Install rsyslog package
+  apt:
+    name: rsyslog
+    state: present
+
+- name: Start and enable rsyslog
+  systemd:
+    name: rsyslog
+    state: started
+    enabled: yes
+
+
+- name: Configure rsyslog settings
+  template:
+    src: rsyslog.conf
+    dest: /etc/rsyslog.conf
+  notify:
+    - Restart rsyslog service
+
+- name: Configure json template
+  template:
+    src: rsyslog.d/01-json-template.conf
+    dest: /etc/rsyslog.d/01-json-template.conf
+  notify:
+    - Restart rsyslog service
+
+- name: Configure output
+  template:
+    src: rsyslog.d/60-output.conf
+    dest: /etc/rsyslog.d/60-output.conf
+  notify:
+    - Restart rsyslog service
